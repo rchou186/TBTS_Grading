@@ -1,0 +1,9 @@
+venv1
+__pycache__
+build
+dist
+*.spec
+*.vscode
+*.CSV
+*.html
+*.xlsx

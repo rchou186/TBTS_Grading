@@ -18,6 +18,7 @@ def result_to_chart(df_all, result_filename):
 
     # generate charts, seperate by Phase
     fig = px.line(df_all, x='Time', y='Voltage', color='Module', facet_col='Phase', title=result_filename+' DCD Chart')
+    fig.update_xaxes(tickformat='%M:%S')
 
     # fig.show()
 

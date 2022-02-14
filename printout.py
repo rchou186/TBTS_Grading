@@ -41,8 +41,8 @@ def print_result(result_file_path):
 
     except com_error as e:
         print("Printout to printer failed.")
-    else:
-        print("Printout to printer succeeded.")
+    #else:
+        #print("Printout to printer succeeded.")
     finally:
 
         # close workbook
@@ -50,9 +50,3 @@ def print_result(result_file_path):
 
         # end excel program
         # excel.Quit()
-
-if __name__ == "__main__":
-    # Path to original excel file
-    WB_PATH = r'c:/Python_Prog/TBTSGrading/J22T00299-(20+20).xlsx'
-
-    print_result(WB_PATH)

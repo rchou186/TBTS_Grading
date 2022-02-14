@@ -150,8 +150,10 @@ for i, csv_file in enumerate(csv_files):
         row[4] = 0          # DIS0_Wh
         row[6] = 0          # CHR_Wh
         row[7] = 0          # DIS_Wh
+        row[8] = 0          # Ratio_Wh
         row[9] = 0          # CHR_Time
         row[10] = 0         # DIS_Time
+        row[11] = 0         # Ratio_Time
         row[17] = 0         # DIS0_Time
         row[18] = 0         # RV10s
         row[19] = 0         # VDT

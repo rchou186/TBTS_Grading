@@ -16,6 +16,9 @@ result_to_sql.py    Save the result table to MySQL database
 printout.py         Printout the result page to the active printer
 README.md           This file
 
+Python modules to be installed:
+pandas, openpyxl, plotly, mysql_connector, win32com, pypiwin32
+
 Versions:
 
 V22.0213.01

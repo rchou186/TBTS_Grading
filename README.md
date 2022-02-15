@@ -17,10 +17,16 @@ printout.py         Printout the result page to the active printer
 README.md           This file
 
 Python modules to be installed:
-pandas, openpyxl, plotly, mysql_connector, win32com, pypiwin32
+pandas, openpyxl, plotly, mysql_connector, pypiwin32, pyinstaller
 
 Versions:
 
 V22.0213.01
 Date: 2022/02/13
  1. Initial Release for Python that is modified from VBA TBGR program
+
+V22.0215.01
+Date: 2022/02/15
+ 1. TBTS_Grading.py, print the time tag on each tasks
+ 2. result_to_sql.py, if the test number exist in the SQL database, rename 
+    the test number to be -A, -B..., and insert the new result 

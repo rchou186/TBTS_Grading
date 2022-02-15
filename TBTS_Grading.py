@@ -20,10 +20,10 @@ from result_to_chart import result_to_chart
 from result_to_excel import result_to_excel
 from result_to_sql import result_to_sql
 
-version = 'V22.0213.01'  # 'V20.1112.01'
+version = 'V22.0215.01'  # 'V20.1112.01'
 
 # chaege time threshold, 2099 for DCD35, 2219 for DCD37
-CHR_TIME_THRES = 2099
+CHR_TIME_THRES = 2219
 
 # VDT threshold, 24 seconds, 0 for not checking
 VDT_THRES = 0
@@ -79,10 +79,16 @@ csv_files = sorted(glob.glob(str(current_path / 'M??.CSV')))
 number_of_modules = len(csv_files)
 
 # get B_SN from M01 for checking battery model
-with open(csv_files[0], 'r', encoding='latin-1') as f:
-    line1 = f.readline().strip().split(',')  # read the first line
-    bsn = line1[9]
-    battery = line1[1]
+try:
+    with open(csv_files[0], 'r', encoding='latin-1') as f:
+        line1 = f.readline().strip().split(',')  # read the first line
+        bsn = line1[9]
+        battery = line1[1]
+
+# if no CSV files in folder
+except:
+    print("No CSV files in folder.")
+    exit()
 
 print(f"Grading battery: {battery}")
 
@@ -383,18 +389,18 @@ result_filename = battery + get_model_suffix(battery_model)
 #print(f"Save CSV file: {result_filename}.csv")
 #table.to_csv((result_filename+'.csv'), index=False)
 
-# output result chart file, JxxTxxxx-(xx).html 
-print(f"Saving chart file: {result_filename}.html")
+# output result chart file, JxxTxxxx-(xx).html
+print(datetime.datetime.now(), f"Saving chart file: {result_filename}.html")
 result_to_chart(df_all, result_filename)
 
 # output result excel file, JxxTxxxx-(xx).xlsx
-print(f"Saving result excel file: {result_filename}.xlsx")
+print(datetime.datetime.now(), f"Saving result excel file: {result_filename}.xlsx")
 result_to_excel(table, ColorList, battery_model, version, result_filename)
 
 # store result on MySQL server
-print("Saving result to MySQL database")
+print(datetime.datetime.now(), "Saving result to MySQL database")
 result_to_sql(table)
 
 # print result sheet to printer
-print(f'Printing result: {result_filename}')
+print(datetime.datetime.now(), f'Printing result: {result_filename}')
 print_result(str(current_path / (result_filename+'.xlsx')))

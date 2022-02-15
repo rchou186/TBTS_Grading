@@ -12,11 +12,6 @@ from openpyxl.utils.dataframe import dataframe_to_rows
 
 from defines import *
 
-#import asposecells
-#import jpype
-# jpype.startJVM()
-#from asposecells.api import Workbook, SaveFormat, PdfSaveOptions
-
 VDELTAMAX_THRES = 2.4
 
 
@@ -65,10 +60,6 @@ def result_to_excel(table, ColorList, battery_model, version, result_filename):
     ws_table.column_dimensions['AA'].width = 11
     ws_table.column_dimensions['AG'].width = 12
     ws_table.column_dimensions['AH'].width = 12
-
-
-    #workbook = Workbook('out.xlsx')
-    #workbook.save('out.pdf', SaveFormat.PDF)
 
     # generate Result worksheet
 

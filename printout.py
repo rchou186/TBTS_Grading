@@ -7,8 +7,8 @@ import win32com.client
 from pywintypes import com_error
 
 # assign active printer here
-ACTIVE_PRINTER = "Brother DCP-T510W"
-#ACTIVE_PRINTER = "EPSONM1120 (M1120 Series)"
+#ACTIVE_PRINTER = "Brother DCP-T510W"
+ACTIVE_PRINTER = "EPSONM1120 (M1120 Series)"
 #ACTIVE_PRINTER = "HP LaserJet Pro M148fdw (E1652D)"
 
 def print_result(result_file_path):

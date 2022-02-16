@@ -29,4 +29,8 @@ V22.0215.01
 Date: 2022/02/15
  1. TBTS_Grading.py, print the time tag on each tasks
  2. result_to_sql.py, if the test number exist in the SQL database, rename 
-    the test number to be -A, -B..., and insert the new result 
+    the test number to be -A, -B..., and insert the new result
+
+V22.0216.01
+Date: 2022/02/16
+ 1. Fix the bug the 'F' grade is not generated

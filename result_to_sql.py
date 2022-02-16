@@ -35,12 +35,11 @@ def result_to_sql(table):
         if mycharacter.isalpha():
             mycharacter = chr(ord(mycharacter) + 1)
             next_battery = battery + '-' + mycharacter
-            sql = f"UPDATE {MYSQL_TABLE} SET Battery = '{next_battery}' WHERE Battery = '{battery}'"
 
         # if the last character is numirical, change test number start with '-A'
         else:
             next_battery = battery + '-A'
-            sql = f"UPDATE {MYSQL_TABLE} SET Battery = '{next_battery}' WHERE Battery = '{battery}'"
+        sql = f"UPDATE {MYSQL_TABLE} SET Battery = '{next_battery}' WHERE Battery = '{battery}'"
         mycursor.execute(sql)
         mydb.commit()
     

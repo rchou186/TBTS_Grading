@@ -297,7 +297,7 @@ for i in range(len(table)):
                         table.loc[i, 'BIN'] = G[1]
                         ColorList[i] = GreenFill
                         good_module += 1
-                    elif table.loc[i, 'Norm_D0'] >= 5 and pregrading == G[2]:       # was 0.75 for DCD35
+                    elif table.loc[i, 'Norm_D0'] >= 0.5 and pregrading == G[2]:       # was 0.75 for DCD35
                         table.loc[i, 'BIN'] = G[2]
                         ColorList[i] = PurpleFill
                         good_module += 1

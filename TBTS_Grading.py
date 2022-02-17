@@ -20,7 +20,7 @@ from result_to_chart import result_to_chart
 from result_to_excel import result_to_excel
 from result_to_sql import result_to_sql
 
-version = 'V22.0215.01'  # 'V20.1112.01'
+version = 'V22.0216.01'  # 'V20.1112.01'
 
 # chaege time threshold, 2099 for DCD35, 2219 for DCD37
 CHR_TIME_THRES = 2219

@@ -7,3 +7,5 @@ dist
 *.CSV
 *.html
 *.xlsx
+*.pdf
+.DS_Store

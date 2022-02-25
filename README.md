@@ -13,7 +13,7 @@ result_to_chart.py  Generate and save the DCD chart html file
 result_to_excel.py  Generate and save the result table and printable result
                     page in excel file 
 result_to_sql.py    Save the result table to MySQL database
-printout.py         Printout the result page to the active printer
+result_to_pdf.py    Save the result to pdf
 README.md           This file
 
 Python modules to be installed:
@@ -34,3 +34,11 @@ Date: 2022/02/15
 V22.0216.01
 Date: 2022/02/16
  1. Fix the bug the 'F' grade is not generated
+
+V22.0225.01
+Date: 2022/02/25
+ 1. Git branch to Result-to-pdf-for-printout-not-using-Excel
+ 2. Remove printout.py
+ 3. Add result_to_pdf.py
+ 4. Add colors at terminal outout
+ 5. Fix the bug the model is '34M' in table

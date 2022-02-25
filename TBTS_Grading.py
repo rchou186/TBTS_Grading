@@ -1,26 +1,27 @@
 ###############################################################################
-### Grading program for TBTS                                                ###
+### Grading program for TBTS without EXCEL to printout                      ###
 ### The test raw csv data is in the same folder of this program             ###
 ### DCD Chart output is in html file                                        ###
 ### Grading result table and printable result sheet is in the excel file    ###
+### Grading result saved in pdf file for print                              ###
 ### Module to install: pandas, openpyxl, plotly                             ###
 ###############################################################################
 
 import datetime
 import glob
 import os
-#import platform
+import platform
 import pathlib
 
 import pandas as pd
 
 from defines import *
-from printout import print_result
 from result_to_chart import result_to_chart
 from result_to_excel import result_to_excel
+from result_to_pdf import result_to_pdf
 from result_to_sql import result_to_sql
 
-version = 'V22.0216.01'  # 'V20.1112.01'
+version = 'V22.0225.01'
 
 # chaege time threshold, 2099 for DCD35, 2219 for DCD37
 CHR_TIME_THRES = 2219
@@ -34,6 +35,17 @@ LAST_CLASS = 0
 # Grades, G[0], G[1], G[2], ...
 G = ['0', 'D', 'F', 'G', 'N', 'Y', 'Z', 'U1', 'U2', 'U3', 'U4']
 
+# define background color on terminal print
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 
 def pre_grading(dis_time_sec):
     if dis_time_sec >= 2190:        # 36.5 * 60
@@ -51,7 +63,6 @@ def pre_grading(dis_time_sec):
     else:
         return G[0]
 
-
 # output table defination
 table = pd.DataFrame(
     columns=['B_SN', 'Battery', 'Org_Module', 'M_SN', 'DIS0_Wh', 'Norm_D0', 'CHR_Wh', 'DIS_Wh',
@@ -64,12 +75,6 @@ table = table.astype({'DIS0_Wh': 'float', 'Norm_D0': 'float', 'CHR_Wh': 'float',
                       'Ratio_Time': 'float', 'V15min': 'float', 'V20min': 'float', 'V25min': 'float', 'V30min': 'float',
                       'V35min': 'float', 'RV10s': 'float', 'VDT': 'int', 'VPVD': 'float', 'TPtE': 'int',
                       'VEOC': 'float', 'VDeltaMax': 'float'})
-
-# check platform and set pathes
-# if platform.system() == 'Darwin':  # Mac
-#    CID_path = pathlib.Path("/Volumes/Battery Test Data/CID")
-# elif platform.system() == 'Windows':  # Windows
-#    CID_path = pathlib.Path("Z:/Battery Test Data/CID")
 
 # get current working path
 current_path = pathlib.Path().resolve()
@@ -87,10 +92,10 @@ try:
 
 # if no CSV files in folder
 except:
-    print("No CSV files in folder.")
+    print(f"{bcolors.WARNING}No CSV file exist!{bcolors.ENDC}")
     exit()
 
-print(f"Grading battery: {battery}")
+print(f"{bcolors.OKGREEN}Grading battery: {battery}{bcolors.ENDC}")
 
 # check battery model from number of modules and B_SN
 # battery_model: 1:'34M',2:'28M',3:'18M+16M', 4:'32M', 5:'40M', 6:'34M+6M', 7:'20M+20M', 8:'20M'
@@ -115,10 +120,10 @@ elif number_of_modules == 40:
     else:                                           # others for 40
         battery_model = 5
 else:
-    print("Module count incorrect!!!")
+    print(f"{bcolors.WARNING}Module count incorrect!!!{bcolors.ENDS}")
     exit()
 
-print(f"{battery} is a {get_model_result(battery_model)} battery.")
+print(f"{bcolors.OKGREEN}{battery} is a {get_model_result(battery_model)} battery.{bcolors.ENDC}")
 
 df_all = pd.DataFrame()
 
@@ -149,7 +154,7 @@ for i, csv_file in enumerate(csv_files):
     # row[26] = str(datetime.datetime.strptime(line2[2][1:], "%H:%M:%S"))  # Time
     row[25] = line2[1][1:]  # Date
     row[26] = line2[2][1:]  # Time
-    row[27] = '34M'  # Model
+    row[27] = get_model_info(battery_model)  # Mode
 
     # if ERROR occurs during test, write 0 value in table
     if (row[24] == 'ST-XX') or (4 not in df.loc[:, 'Phase'].values) or (df.loc[df['Phase'] == 4]['Voltage'].values[-1] >= 6.0):  # The error module
@@ -184,7 +189,7 @@ for i, csv_file in enumerate(csv_files):
         row[7] = -df.loc[df['Phase'] == 4]['Wh'].values[-1]                                     # DIS_Wh
         row[8] = row[7] / row[6]                                                                # Ratio_Wh
 
-        # add 1 second of time in phase 2(CHR) and phase  4(DIS)
+        # add 1 second of time in phase 2(CHR) and phase 4(DIS)
         df.loc[df['Phase'] == 2, 'Time'] = df.loc[df['Phase'] == 2, 'Time'] + 1
         df.loc[df['Phase'] == 4, 'Time'] = df.loc[df['Phase'] == 4, 'Time'] + 1
 
@@ -390,17 +395,25 @@ result_filename = battery + get_model_suffix(battery_model)
 #table.to_csv((result_filename+'.csv'), index=False)
 
 # output result chart file, JxxTxxxx-(xx).html
-print(datetime.datetime.now(), f"Saving chart file: {result_filename}.html")
+print(datetime.datetime.now(), f"{bcolors.OKCYAN}Saving chart file: {result_filename}.html{bcolors.ENDC}")
 result_to_chart(df_all, result_filename)
 
 # output result excel file, JxxTxxxx-(xx).xlsx
-print(datetime.datetime.now(), f"Saving result excel file: {result_filename}.xlsx")
+print(datetime.datetime.now(), f"{bcolors.OKCYAN}Saving result excel file: {result_filename}.xlsx{bcolors.ENDC}")
 result_to_excel(table, ColorList, battery_model, version, result_filename)
 
+# output result to pdf file
+print(datetime.datetime.now(), f"{bcolors.OKCYAN}Saving result pdf file: {result_filename}.pdf{bcolors.ENDC}")
+result_to_pdf(table, battery_model, version, result_filename)
+
 # store result on MySQL server
-print(datetime.datetime.now(), "Saving result to MySQL database")
+print(datetime.datetime.now(), f"{bcolors.OKCYAN}Saving result to MySQL database{bcolors.ENDC}")
 result_to_sql(table)
 
 # print result sheet to printer
-print(datetime.datetime.now(), f'Printing result: {result_filename}')
-print_result(str(current_path / (result_filename+'.xlsx')))
+
+# check platform and print to printer
+if platform.system() == 'Darwin':  # Mac
+    os.system(f"lp -o orientation-requested=4 '{result_filename}.pdf'")
+elif platform.system() == 'Windows':  # Windows
+    pass

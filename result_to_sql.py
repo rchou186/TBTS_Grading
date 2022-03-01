@@ -5,15 +5,15 @@
 
 import mysql.connector
 
-MYSQL_DATABASE = 'Richard'   # TBR_Battery_Test
+#MYSQL_DATABASE = 'richard'   # TBR_Battery_Test
 MYSQL_TABLE = 'Total'
 
-def result_to_sql(table):
+def result_to_sql(table, sql_database):
     mydb = mysql.connector.connect(
         host = '192.168.1.84',
         user = 'richard',
         password = 'richardtbts',
-        database = MYSQL_DATABASE
+        database = sql_database
     )
     mycursor = mydb.cursor()
 

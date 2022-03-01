@@ -5,7 +5,7 @@
 ### Grading result table and printable result sheet is in the excel file    ###
 ### Grading result saved in pdf file for print                              ###
 ### command line argument: TBTS_Grading.py "printer_name"                   ###
-### Module to install: pandas, openpyxl, plotly                             ###
+### Module to install: pandas, openpyxl, plotly, pywin32, pywin32-ctypes    ###
 ###############################################################################
 
 import datetime
@@ -13,6 +13,7 @@ import glob
 import os
 import platform
 import pathlib
+import sys, getopt
 
 import pandas as pd
 
@@ -22,7 +23,7 @@ from result_to_excel import result_to_excel
 from result_to_pdf import result_to_pdf
 from result_to_sql import result_to_sql
 
-version = 'V22.0301.01'
+version = 'V22.0301.02'
 
 # chaege time threshold, 2099 for DCD35, 2219 for DCD37
 CHR_TIME_THRES = 2219
@@ -63,6 +64,28 @@ def pre_grading(dis_time_sec):
         return G[6]
     else:
         return G[0]
+
+sql_database = ""
+active_printer = ""
+
+# get the command line options and arguments: -h, -d, -p
+try:
+    opts, args = getopt.getopt(sys.argv[1:], 'hd:p:', ['database=', 'printer='])
+except getopt.GetoptError:
+    print("usage: TBTS_Grading.py <-d SQL database> [-p printer name]")
+    exit()
+for opt, arg in opts:
+    if opt == '-h':
+        print("usage: TBTS_Grading.py <-d SQL database> [-p printer name]")
+        exit()
+    elif opt in ('-d', '--database'):
+        sql_database = arg
+    elif opt in ('-p', '--printer'):
+        active_printer = arg
+
+if sql_database == "":
+    print("usage: TBTS_Grading.py <-d SQL database> [-p printer name]\nNeed to specify SQL database.")
+    exit()
 
 # output table defination
 table = pd.DataFrame(
@@ -410,7 +433,7 @@ result_to_pdf(table, battery_model, version, result_filename)
 
 # store result on MySQL server
 print(datetime.datetime.now(), f"{bcolors.OKCYAN}Saving result to MySQL database{bcolors.ENDC}")
-result_to_sql(table)
+result_to_sql(table, sql_database)
 
 # print result sheet to printer
 
@@ -420,15 +443,19 @@ if platform.system() == 'Darwin':  # Mac
 elif platform.system() == 'Windows':  # Windows
     import win32api
     import win32print
-    import sys
     default_printer = win32print.GetDefaultPrinter()
-    if len(sys.argv) == 2:                  # if argument in command line
-        active_printer  = str(sys.argv[1])  # the argument should be printer name
-    else:
-        active_printer = default_printer
+    if active_printer == "":
+        active_printer  = default_printer
     print(datetime.datetime.now(), f"{bcolors.OKCYAN}Print result to printer: {active_printer}{bcolors.ENDC}")   
+    
+    '''
+    # use the "print" command  and specify the printer name by setting the default printer
     win32print.SetDefaultPrinter(active_printer)    # set the default printer to active printer to printout
     win32api.ShellExecute(0, "print", f"{result_filename}.pdf", None, ".", 0)
     win32print.SetDefaultPrinter(default_printer)   # set back to original default printer
+    '''
+    
+    # use the "printto" command  and specify the printer name in it
+    win32api.ShellExecute(0, "printto", f"{result_filename}.pdf", f'"{active_printer}"', ".", 0)
 
 

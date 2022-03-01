@@ -1,7 +1,10 @@
-tbts_grading is the grading program for Mxx.csv files that tested by TBTS.
+TBTS_Grading is the grading program for Mxx.csv files that tested by TBTS.
+
 This program generate the following output result files:
   1. testnumber-(xx).html    The DCD chart in html format
   2. testnumber-(xx).xlsx    The grading result table and printable result page
+  3. testnumber-(xx).pdf     The grading result page for print without excel   
+
 This program also save the result table in the MySQL database and print out
 the result page for factory operation.
 
@@ -17,10 +20,13 @@ result_to_pdf.py    Save the result to pdf
 README.md           This file
 
 Python modules to be installed:
-pandas, openpyxl, plotly, mysql_connector, reportlab, pyinstaller
+pandas, openpyxl, plotly, mysql_connector, reportlab, pywin32, pywin32_ctypes, 
+pyinstaller
 
-Command line:
-TBTS_Grading.py [printer name]
+Command line usage:
+TBTS_Grading.py <-d SQL database> [-p printer name]
+-d    SQL database of result storage (madatory)
+-p    printer name to print out (optional)
 
 
 Versions:
@@ -55,3 +61,10 @@ Date: 2022/03/01
  2. When getting the date from csv, need to set the format to yyyy-mm-dd
     by strptime(line2[1][1:], "%m-%d-%Y").strftime("%Y-%m-%d") for correctly
     insert to sql.
+
+V22.0301.02
+Date: 2022/03/01
+ 1. Add command line arguments for specify the SQL database and printer name 
+    for print out.
+ 2. Change to "printto" command in win32api.ShellExecute to specify the 
+    desired printer name directly instead of change the default printer.

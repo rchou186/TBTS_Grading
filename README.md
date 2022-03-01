@@ -17,7 +17,11 @@ result_to_pdf.py    Save the result to pdf
 README.md           This file
 
 Python modules to be installed:
-pandas, openpyxl, plotly, mysql_connector, pypiwin32, pyinstaller
+pandas, openpyxl, plotly, mysql_connector, reportlab, pyinstaller
+
+Command line:
+TBTS_Grading.py [printer name]
+
 
 Versions:
 
@@ -28,8 +32,8 @@ Date: 2022/02/13
 V22.0215.01
 Date: 2022/02/15
  1. TBTS_Grading.py, print the time tag on each tasks
- 2. result_to_sql.py, if the test number exist in the SQL database, rename 
-    the test number to be -A, -B..., and insert the new result
+ 2. result_to_sql.py, if the test number exist in the SQL database, rename the
+    test number to be -A, -B..., and insert the new result
 
 V22.0216.01
 Date: 2022/02/16
@@ -37,8 +41,17 @@ Date: 2022/02/16
 
 V22.0225.01
 Date: 2022/02/25
- 1. Git branch to Result-to-pdf-for-printout-not-using-Excel
+ 1. Git branch to Result-to-pdf
  2. Remove printout.py
  3. Add result_to_pdf.py
  4. Add colors at terminal outout
  5. Fix the bug the model is '34M' in table
+
+V22.0301.01
+Date: 2022/03/01
+ 1. Add print pdf file in Windows. The command line add one argument for
+    setting the printer name to print. If the argument is not specified, 
+    it will print to default printer.
+ 2. When getting the date from csv, need to set the format to yyyy-mm-dd
+    by strptime(line2[1][1:], "%m-%d-%Y").strftime("%Y-%m-%d") for correctly
+    insert to sql.

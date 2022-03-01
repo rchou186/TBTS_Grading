@@ -4,6 +4,7 @@
 ### DCD Chart output is in html file                                        ###
 ### Grading result table and printable result sheet is in the excel file    ###
 ### Grading result saved in pdf file for print                              ###
+### command line argument: TBTS_Grading.py "printer_name"                   ###
 ### Module to install: pandas, openpyxl, plotly                             ###
 ###############################################################################
 
@@ -150,9 +151,10 @@ for i, csv_file in enumerate(csv_files):
         row[33] = line1[17]  # GSN
     except:
         pass
-    # row[25] = str(datetime.datetime.strptime(line2[1][1:], "%m-%d-%Y"))  # Date
-    # row[26] = str(datetime.datetime.strptime(line2[2][1:], "%H:%M:%S"))  # Time
-    row[25] = line2[1][1:]  # Date
+    # date convert to yyyy-mm-dd to cirrectly insert to sql
+    row[25] = str(datetime.datetime.strptime(line2[1][1:], "%m-%d-%Y").strftime("%Y-%m-%d"))
+    #row[26] = str(datetime.datetime.strptime(line2[2][1:], "%H:%M:%S"))  # Time
+    #row[25] = line2[1][1:]  # Date
     row[26] = line2[2][1:]  # Time
     row[27] = get_model_info(battery_model)  # Mode
 
@@ -416,4 +418,17 @@ result_to_sql(table)
 if platform.system() == 'Darwin':  # Mac
     os.system(f"lp -o orientation-requested=4 '{result_filename}.pdf'")
 elif platform.system() == 'Windows':  # Windows
-    pass
+    import win32api
+    import win32print
+    import sys
+    default_printer = win32print.GetDefaultPrinter()
+    if len(sys.argv) == 2:                  # if argument in command line
+        active_printer  = str(sys.argv[1])  # the argument should be printer name
+    else:
+        active_printer = default_printer
+    print(datetime.datetime.now(), f"{bcolors.OKCYAN}Print result to printer: {active_printer}{bcolors.ENDC}")   
+    win32print.SetDefaultPrinter(active_printer)    # set the default printer to active printer to printout
+    win32api.ShellExecute(0, "print", f"{result_filename}.pdf", None, ".", 0)
+    win32print.SetDefaultPrinter(default_printer)   # set back to original default printer
+
+

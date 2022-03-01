@@ -1,3 +1,7 @@
+###############################################################################
+### Make pdf result file                                                    ###
+### Module to install: pandas, reportlab                                    ###
+###############################################################################
 
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4, landscape
@@ -7,7 +11,7 @@ import pandas as pd
 from defines import *
 
 VDELTAMAX_THRES = 2.4
-GRAY1 = 0.6
+GRAY1 = 0.7             # 0.0=black, 1.0=white
 
 def result_to_pdf(table, battery_model, version, result_filename):
 

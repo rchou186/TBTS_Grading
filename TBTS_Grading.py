@@ -457,5 +457,6 @@ elif platform.system() == 'Windows':  # Windows
     
     # use the "printto" command  and specify the printer name in it
     win32api.ShellExecute(0, "printto", f"{result_filename}.pdf", f'"{active_printer}"', ".", 0)
+    os.system("taskkill /im acrobat.exe")
 
 

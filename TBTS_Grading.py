@@ -14,6 +14,7 @@ import os
 import platform
 import pathlib
 import sys, getopt
+import time
 
 import pandas as pd
 
@@ -23,7 +24,7 @@ from result_to_excel import result_to_excel
 from result_to_pdf import result_to_pdf
 from result_to_sql import result_to_sql
 
-version = 'V22.0301.02'
+version = 'V22.0303.01'
 
 # chaege time threshold, 2099 for DCD35, 2219 for DCD37
 CHR_TIME_THRES = 2219
@@ -36,6 +37,9 @@ LAST_CLASS = 0
 
 # Grades, G[0], G[1], G[2], ...
 G = ['0', 'D', 'F', 'G', 'N', 'Y', 'Z', 'U1', 'U2', 'U3', 'U4']
+
+# default pdf reader program for Windows
+DEFAULT_PDF = "AcroRd32.exe"
 
 # define background color on terminal print
 class bcolors:
@@ -67,25 +71,30 @@ def pre_grading(dis_time_sec):
 
 sql_database = ""
 active_printer = ""
+pdf_reader = DEFAULT_PDF
+usage_string = "usage: TBTS_Grading.py <-d SQL database> [-p printer name] [-a acrobat reader name]"
 
-# get the command line options and arguments: -h, -d, -p
+# get the command line options and arguments: -h, -d, -p, -a
 try:
-    opts, args = getopt.getopt(sys.argv[1:], 'hd:p:', ['database=', 'printer='])
+    opts, args = getopt.getopt(sys.argv[1:], 'hd:p:a:', ['database=', 'printer='])
 except getopt.GetoptError:
-    print("usage: TBTS_Grading.py <-d SQL database> [-p printer name]")
-    exit()
+    print(usage_string)
+    sys.exit()
 for opt, arg in opts:
     if opt == '-h':
-        print("usage: TBTS_Grading.py <-d SQL database> [-p printer name]")
-        exit()
+        print(usage_string)
+        sys.exit()
     elif opt in ('-d', '--database'):
         sql_database = arg
     elif opt in ('-p', '--printer'):
         active_printer = arg
+    elif opt in ('-a', '--acrobat'):
+        pdf_reader = arg
 
 if sql_database == "":
-    print("usage: TBTS_Grading.py <-d SQL database> [-p printer name]\nNeed to specify SQL database.")
-    exit()
+    print(usage_string)
+    print("Need to specify SQL database.")
+    sys.exit()
 
 # output table defination
 table = pd.DataFrame(
@@ -117,7 +126,7 @@ try:
 # if no CSV files in folder
 except:
     print(f"{bcolors.WARNING}No CSV file exist!{bcolors.ENDC}")
-    exit()
+    sys.exit()
 
 print(f"{bcolors.OKGREEN}Grading battery: {battery}{bcolors.ENDC}")
 
@@ -145,7 +154,7 @@ elif number_of_modules == 40:
         battery_model = 5
 else:
     print(f"{bcolors.WARNING}Module count incorrect!!!{bcolors.ENDS}")
-    exit()
+    sys.exit()
 
 print(f"{bcolors.OKGREEN}{battery} is a {get_model_result(battery_model)} battery.{bcolors.ENDC}")
 
@@ -457,6 +466,7 @@ elif platform.system() == 'Windows':  # Windows
     
     # use the "printto" command  and specify the printer name in it
     win32api.ShellExecute(0, "printto", f"{result_filename}.pdf", f'"{active_printer}"', ".", 0)
-    os.system("taskkill /im acrobat.exe")
+    time.sleep(5)
+    os.system(f"taskkill /im {pdf_reader}")
 
 

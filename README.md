@@ -68,3 +68,10 @@ Date: 2022/03/01
     for print out.
  2. Change to "printto" command in win32api.ShellExecute to specify the 
     desired printer name directly instead of change the default printer.
+
+V22.0303.02
+Date: 2022/03/03
+ 1. Add command line option of the program name of acrobat reader(pdf reader)
+    TBTS_Grading.exe [-a acrobat reader name]
+    default is AcroRD32.exe
+ 2. Add time delay and taskkill adobe acrobat after print the result

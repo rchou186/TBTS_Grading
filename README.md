@@ -75,3 +75,7 @@ Date: 2022/03/03
     TBTS_Grading.exe [-a acrobat reader name]
     default is AcroRD32.exe
  2. Add time delay and taskkill adobe acrobat after print the result
+
+V22.0304.01
+Date: 2022/03/04
+ 1. Modify the pdf format to make it larger and easy to read
